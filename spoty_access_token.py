@@ -6,7 +6,7 @@ SPOTIFY_TOKEN_ENDPOINT = "https://accounts.spotify.com/api/token"
 SPOTIFY_CLIENT_DATA_FIELDS = ["client_id", "client_secret"]
 
 
-def GetKeysDirectory():
+def _GetKeysDirectory():
     script_directory = Path(__file__).parent
     keys_directory = script_directory / "keys"
     if not (keys_directory.exists() and keys_directory.is_dir()):
@@ -14,14 +14,14 @@ def GetKeysDirectory():
     return keys_directory
 
 
-def GetKeysJsonFilePaths():
-    key_json_files = GetKeysDirectory().glob("*.json")
+def _GetKeysJsonFilePaths():
+    key_json_files = _GetKeysDirectory().glob("*.json")
     if not key_json_files:
         raise FileNotFoundError()
     return key_json_files
 
 
-def GetClientDataFromJson(path: Path):
+def _GetClientDataFromJson(path: Path):
     with path.open() as file:
         data: dict = json.load(file)
     try:
@@ -33,7 +33,7 @@ def GetClientDataFromJson(path: Path):
     return {key: value for key, value in zip(SPOTIFY_CLIENT_DATA_FIELDS, values)}
 
 
-def RequestAccessToken(client_data: dict | None):
+def _RequestAccessToken(client_data: dict | None):
     if not client_data:
         return None
 
@@ -55,9 +55,9 @@ def RequestAccessToken(client_data: dict | None):
 
 
 def GetAccessToken():
-    for key_json in GetKeysJsonFilePaths():
-        client_data = GetClientDataFromJson(key_json)
-        access_token = RequestAccessToken(client_data)
+    for key_json in _GetKeysJsonFilePaths():
+        client_data = _GetClientDataFromJson(key_json)
+        access_token = _RequestAccessToken(client_data)
         if access_token:
             return access_token
 
