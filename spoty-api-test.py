@@ -1,5 +1,8 @@
 from pathlib import Path
 import json
+import requests
+
+SPOTIFY_TOKEN_ENDPOINT = "https://accounts.spotify.com/api/token"
 
 # Get directories
 script_directory = Path(__file__).parent
@@ -23,6 +26,13 @@ for json_file in key_json_files:
         ):
             print(f"{json_file.name} has required fields")
             # Request access token
-            break
+            keys["grant_type"] = "client_credentials"
+            response = requests.post(
+                SPOTIFY_TOKEN_ENDPOINT,
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                data=keys,
+                timeout=10,
+            )
+            print(response.text)
         else:
             print(f"{json_file.name} doesn't have required fields")
